@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
-import { useMemo } from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { useLoadScript } from "@react-google-maps/api";
+import Link from "next/link";
+import styles from "@/styles/Home.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,17 +11,13 @@ export default function Home() {
   });
   if (!isLoaded) return <div>Loading...</div>;
   return (
-    <div className={inter.className}>
-      <Map />
+    <div className={`${inter.className} ${styles.main}`}>
+      <div className={`${styles.map} ${styles.basic}`}>
+        <Link href="/basic-map">1. Basic Map 이동하기</Link>
+      </div>
+      <div className={`${styles.map} ${styles.places}`}>
+        <Link href="/places">2. Place Map 이동하기(지도 ID 검색)</Link>
+      </div>
     </div>
-  );
-}
-
-function Map() {
-  const center = useMemo(() => ({ lat: 44, lng: -80 }), []);
-  return (
-    <GoogleMap zoom={2} center={center} mapContainerClassName="map-container">
-      <Marker position={center} />
-    </GoogleMap>
   );
 }
