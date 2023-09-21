@@ -8,9 +8,6 @@ https://developers.google.com/codelabs/maps-platform/maps-platform-101-js?hl=ko#
 
 ## 일정
 
-(~금) 구글맵 javascript api 로드하기 + 지도 검색 + 지도 ID추가 + 마커추가하기
-</br>
-(~토) 마커클러스터링 사용 설정하기 + 사용자 상호작용 추가하기 
-</br>
-(~일) 구글 지도 영역 색칠하기 + 지도에 그리기  
-</br>
+- (~금) 구글맵 javascript api 로드하기 + 지도 검색 + 지도 ID추가 + 마커추가하기
+- (~토) 마커클러스터링 사용 설정하기 + 사용자 상호작용 추가하기 
+- (~일) 구글 지도 영역 색칠하기 + 지도에 그리기  
