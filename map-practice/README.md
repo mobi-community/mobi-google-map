@@ -28,6 +28,14 @@
 > 1️⃣ @react-google-maps/api 라이브러리 사용하여 구글 지도 로드, center에 마커 표시하기<br>
 > 2️⃣ use-places-autocomplete 라이브러리 사용하여 장소(place) ID 검색하여 마커 찍기
 
+### 23/09/23
+
+> 마커 클러스터링 시도하였으나 잘 되지 않아 일단 보류
+
+### 23/09/24
+
+> 1️⃣ snazzy maps 활용하여 구글 맵 스타일 커스텀 테스트 진행
+
 #### 레퍼런스
 
 https://www.youtube.com/watch?v=9e-5QHpadi0
