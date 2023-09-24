@@ -1,307 +1,78 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import PlacesAutocomplete from "./PlacesAutocomplete";
+import { mapOptions } from "@/constants/mapOptions";
+import MarkerClusterer from "@googlemaps/markerclustererplus";
 
 export interface Location {
   lat: number;
   lng: number;
 }
 
-const mapOptions = {
-  styles: [
-    {
-      featureType: "all",
-      elementType: "labels.text.fill",
-      stylers: [
-        {
-          saturation: 36,
-        },
-        {
-          color: "#ffffff",
-        },
-        {
-          lightness: 40,
-        },
-      ],
-    },
-    {
-      featureType: "all",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          visibility: "on",
-        },
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 16,
-        },
-        {
-          weight: "1.00",
-        },
-      ],
-    },
-    {
-      featureType: "all",
-      elementType: "labels.icon",
-      stylers: [
-        {
-          visibility: "on",
-        },
-        {
-          gamma: "1.00",
-        },
-        {
-          lightness: "-20",
-        },
-        {
-          saturation: "0",
-        },
-        {
-          invert_lightness: true,
-        },
-        {
-          weight: "1.00",
-        },
-        {
-          hue: "#fffe00",
-        },
-      ],
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 20,
-        },
-        {
-          visibility: "off",
-        },
-      ],
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#fce805",
-        },
-        {
-          lightness: 17,
-        },
-        {
-          weight: 1.2,
-        },
-        {
-          visibility: "on",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.locality",
-      elementType: "labels.text.fill",
-      stylers: [
-        {
-          weight: "1.00",
-        },
-        {
-          gamma: "1.00",
-        },
-        {
-          lightness: "0",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.locality",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          weight: "1.00",
-        },
-      ],
-    },
-    {
-      featureType: "administrative.locality",
-      elementType: "labels.icon",
-      stylers: [
-        {
-          visibility: "on",
-        },
-        {
-          color: "#fce805",
-        },
-      ],
-    },
-    {
-      featureType: "landscape",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 20,
-        },
-      ],
-    },
-    {
-      featureType: "poi",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 21,
-        },
-      ],
-    },
-    {
-      featureType: "poi.business",
-      elementType: "all",
-      stylers: [
-        {
-          visibility: "off",
-        },
-        {
-          color: "#ffffff",
-        },
-      ],
-    },
-    {
-      featureType: "poi.business",
-      elementType: "labels.icon",
-      stylers: [
-        {
-          saturation: "43",
-        },
-      ],
-    },
-    {
-      featureType: "road",
-      elementType: "all",
-      stylers: [
-        {
-          visibility: "on",
-        },
-        {
-          weight: "1.00",
-        },
-        {
-          gamma: "1.00",
-        },
-        {
-          lightness: "0",
-        },
-        {
-          saturation: "0",
-        },
-        {
-          hue: "#fffe00",
-        },
-      ],
-    },
-    {
-      featureType: "road",
-      elementType: "labels.icon",
-      stylers: [
-        {
-          visibility: "off",
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 17,
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 29,
-        },
-        {
-          weight: 0.2,
-        },
-      ],
-    },
-    {
-      featureType: "road.arterial",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 18,
-        },
-      ],
-    },
-    {
-      featureType: "road.local",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 16,
-        },
-      ],
-    },
-    {
-      featureType: "transit",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 19,
-        },
-      ],
-    },
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#646464",
-        },
-        {
-          lightness: 17,
-        },
-      ],
-    },
-  ],
-};
-
 export default function PlaceMap() {
   const center = useMemo(() => ({ lat: 43.45, lng: -80.49 }), []);
   const [selected, setSelected] = useState<Location | null>(null);
   const [mapZoom, setMapZoom] = useState<number>(2);
+  const [markers, setMarkers] = useState<Location[]>([]);
+  const [markerCluster, setMarkerCluster] = useState<MarkerClusterer | null>(
+    null
+  );
 
+  useEffect(() => {
+    // markers 배열이 업데이트될 때마다 클러스터를 업데이트
+    if (markerCluster) {
+      markerCluster.clearMarkers();
+      markerCluster.addMarkers(
+        markers.map(
+          (markerLocation, index) =>
+            new google.maps.Marker({
+              position: markerLocation,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: "red",
+                fillOpacity: 1,
+                strokeWeight: 0.4,
+                strokeColor: "black",
+                scale: 5,
+              },
+            })
+        )
+      );
+    }
+  }, [markers, markerCluster]);
+
+  const clustererOptions = {
+    // 클러스터 아이콘(구글 기본)
+    imagePath:
+      "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+
+    // 클러스터 그리드 크기 설정
+    gridSize: 50, // 기본값 60, 숫자 작아질수록 크기 작아짐
+  };
+
+  const handleMapLoad = (map: google.maps.Map | null) => {
+    // 구글 지도가 로드될 때 호출되는 콜백 함수
+    if (map) {
+      const mc = new MarkerClusterer(map, [], clustererOptions); // 마커 클러스터 객체 생성
+      setMarkerCluster(mc); // 마커 클러스터 객체 상태 설정
+    }
+  };
+
+  // 입력 input 장소로 지도 zoom 이벤트
   const zoomToLocation = (location: Location) => {
     setSelected(location);
-    setMapZoom(10); // 입력한 input의 장소로 지도 확대
+    setMapZoom(10);
+  };
+
+  // Marker추가
+  const handleMapClick = (event: google.maps.MapMouseEvent) => {
+    const clickedLocation = {
+      lat: event.latLng?.lat() || 0,
+      lng: event.latLng?.lng() || 0,
+    };
+    zoomToLocation(clickedLocation);
+    const newMarkers = [...markers, clickedLocation];
+    setMarkers(newMarkers);
   };
 
   return (
@@ -318,8 +89,24 @@ export default function PlaceMap() {
         center={selected || center}
         mapContainerClassName="map-container"
         options={mapOptions}
+        onClick={handleMapClick}
+        onLoad={handleMapLoad} // 지도 로드 시 콜백 함수 호출
       >
         {selected && <Marker position={selected} />}
+        {markers.map((markerLocation, index) => (
+          <Marker
+            key={index}
+            position={markerLocation}
+            icon={{
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: "red",
+              fillOpacity: 1,
+              strokeWeight: 0.4,
+              strokeColor: "black",
+              scale: 5,
+            }}
+          />
+        ))}
       </GoogleMap>
     </>
   );

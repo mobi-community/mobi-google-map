@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@googlemaps/markerclustererplus": "^1.2.10",
     "@reach/combobox": "^0.18.0",
     "@react-google-maps/api": "^2.19.2",
+    "@types/googlemaps": "^3.43.3",
     "@types/node": "20.6.3",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
